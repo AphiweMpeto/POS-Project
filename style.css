@@ -1,0 +1,11 @@
+#products {
+    flex-wrap;
+}
+
+#products{
+    height: 360px;
+    subject-fit: cover;
+}
+.card {
+    
+}
