@@ -26,7 +26,7 @@ let products = [
         img: "https://postimg.cc/14bt1rZK"
     },
     {
-        title: "kicks",
+        title: "sneakers",
         category: "shoes",
         price: 129.99,
         img: "https://postimg.cc/9zBhJPQM"
@@ -37,9 +37,9 @@ let products = [
 
 function readProducts(prod) {
     document.querySelector("#products").innerHTML = "";
-    prod.forEach((product, i) => {
-        document.querySelector("#product").innerHTML += `
-    
+    prod.forEach((product) => {
+        document.querySelector("#products").innerHTML = `
+        
         `;
     });
 
@@ -50,7 +50,7 @@ readProducts(products);
 // CREATE
 
 function addProduct() {
-    let prod = document.querySelector("#input").value;
+    let product = document.querySelector("#input").value;
     let prod = document.querySelector("#addCategory").value;
     try {
         
@@ -69,7 +69,7 @@ function addProduct() {
 //DELETE
 
 function deleteProduct(i) {
-    let confirmation = confrm("Are you sure you want to delete this product?");
+    let confirmation = confirm("Are you sure you want to delete this product?");
     if (confirmation) {
         products.splice(i, 1);
     }
