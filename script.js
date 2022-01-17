@@ -1,4 +1,6 @@
-let products = [
+let products = JSON.parse(localStorage.getItem("products"))
+    ?JSON.parse(localStorage.getItem("products"))
+    :[
     {
         title: "sun glasses",
         category: "accessories" ,
@@ -37,10 +39,56 @@ let products = [
 
 function readProducts(prod) {
     document.querySelector("#products").innerHTML = "";
-    prod.forEach((product) => {
-        document.querySelector("#products").innerHTML = `
-        
-        `;
+    prod.forEach((product, position) => {
+        document.querySelector("#products").innerHTML += `
+        <div class="card mb-3 g-4">
+    <img src="${product.img}" class="card-img-top" alt="${product.title}">
+    <div class="card-body">
+        <h5 class="card-title">${product.title}</h5>
+        <p class="card-text">R${product.price}</p>
+        <div class="d-flex mb-3">
+        <input type="number" class="form-control value=1 min=1 id=addToCart">
+        <button type="button" class="btn btn-primary ms-3" onclick="addToCart(${position})"><i class="fas fa-cart-plus"></i></button>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end card-footer">
+        <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#editProduct${position}">Edit</button>
+        <button type="button" class="btn btn-info w-50 ms-3" onclick="deleteProduct${position}">Delete</button>
+    </div>
+    </div>
+    <div class="modal fade" id="editProduct${position}" tabindex="-1"aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> Edit ${product.title}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="mb-3"><label for="editTitle${position}" class="form-label">Title</label><input class="form-control" 
+                    type="text" name="editTitle${position}" id="editTitle${position}" value="${product.title}"/>
+            </div>
+            <div class="mb-3"><label for="editCategory${position}" class="form-label">Category</label>
+                <select class="form-select" name="editCategory${position}" id="editCategory${position}">
+                    <option value="Fruit">Fruit</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Meat">Meat</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="editPrice${position}" class="form-label">Price</label>
+                <input class="form-control" type="text" name="editPrice${position}" id="editPrice${position}" value="${product.price}"/>
+            </div>
+            <div class="mb-3"><label for="editImg${position}" class="form-label">Image URL</label>
+                <input class="form-control" type="text" name="editImg${position}" id="editImg${position}"value="${product.img}"/>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateProduct(${position})">Save changes</button></div>
+            </div>
+        </div>
+    </div>
+    `;
     });
 
 };

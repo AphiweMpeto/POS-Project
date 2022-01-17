@@ -7,5 +7,7 @@
     subject-fit: cover;
 }
 .card {
-    
+    width: 220px;
+    height: 400;
+    margin: 10px
 }
