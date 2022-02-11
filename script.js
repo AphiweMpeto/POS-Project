@@ -3,52 +3,56 @@ let products = JSON.parse(localStorage.getItem("products"))
     :[
     {
         title: "sun glasses",
-        category: "accessories" ,
-        price: 20.00,
-        img: "https://postimg.cc/HjhZtV1K"
+        category: "accessories",
+        price: 20.99,
+        img:"https://i.postimg.cc/BvJZxRpL/59040487.jpg",
     },
     {
         title: "watch",
-        category: "accessories" ,
+        category: "accessories",
         price: 39.99,
-        img: "https://postimg.cc/NK3L88dM"
+        img: "https://i.postimg.cc/hGjxBpx9/486x486-W.jpg",
     },
         
     {
         title: "sweatpants",
         category: "bottoms", 
         price: 13.99,
-        img: "https://postimg.cc/YvksvTHq"
+        img: "https://i.postimg.cc/9fPpkwyg/162807432750b234398e1fb79074240a778d65d3e6-thumbnail-600x.webp",
     },
      
     {
         title: "shirt",
-        category: "tops" ,
+        category: "tops",
         price: 9.99,
-        img: "https://postimg.cc/14bt1rZK"
+        img: "https://i.postimg.cc/7YZT7Ksj/shirt.jpg",
     },
     {
         title: "sneakers",
         category: "shoes",
         price: 129.99,
-        img: "https://postimg.cc/9zBhJPQM"
+        img: "https://i.postimg.cc/xjw1jtrK/shoes.jpg",
     },
 ];
 
+let cart = JSON.parse(localStorage.getItem("cart"))
+   ? JSON.parse(localStorage.getItem("cart"))
+  : [];
+
 // READ 
 
-function readProducts(prod) {
+function readProducts(products) {
     document.querySelector("#products").innerHTML = "";
-    prod.forEach((product, position) => {
+    products.forEach((product, position) => {
         document.querySelector("#products").innerHTML += `
-        <div class="card mb-3 g-4">
+        <div class="card">
     <img src="${product.img}" class="card-img-top" alt="${product.title}">
-    <div class="card-body">
+    <div class="card-body p-2 mt-4">
         <h5 class="card-title">${product.title}</h5>
         <p class="card-text">R${product.price}</p>
         <div class="d-flex mb-3">
-        <input type="number" class="form-control value=1 min=1 id=addToCart">
-        <button type="button" class="btn btn-primary ms-3" onclick="addToCart(${position})"><i class="fas fa-cart-plus"></i></button>
+        <input type="number" class="form-control" style="resize:horizontal; width:180px" value=1 min=1 id=addToCart">
+        <button type="button" class="btn btn-primary w-40 ms-2" onclick="addToCart(${position})"><i class="bi bi-cart3"></i></button>
         </div>
     </div>
     <div class="d-flex justify-content-end card-footer">
@@ -69,9 +73,10 @@ function readProducts(prod) {
             </div>
             <div class="mb-3"><label for="editCategory${position}" class="form-label">Category</label>
                 <select class="form-select" name="editCategory${position}" id="editCategory${position}">
-                    <option value="Fruit">Fruit</option>
-                    <option value="Vegetables">Vegetables</option>
-                    <option value="Meat">Meat</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="bottoms">Bottoms</option>
+                    <option value="tops">Tops</option>
+                    <option value="shoes">Shoes</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -84,33 +89,39 @@ function readProducts(prod) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateProduct(${position})">Save changes</button></div>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateProduct(${position})">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
     `;
     });
-
-};
+}
 
 readProducts(products);
+showCartBadge();
 
 // CREATE
 
 function addProduct() {
-    let product = document.querySelector("#input").value;
-    let prod = document.querySelector("#addCategory").value;
+    let title = document.querySelector("#addTitle").value;
+    let category = document.querySelector("#addCategory").value;
+    let price = document.querySelector("#addPrice").value;
+    let img = document.querySelector("#addImg").value;
     try {
-        
-    
+        if (!title || !price || !img) throw new Error("Please fill in all fields");
+        products.push({
+            title,
+            category,
+            price,
+            img,
+        });
+        localStorage.setItem("products", JSON.stringify(products));
         readProducts(products);
     }
     catch (err) {
-    
-        alert(err); {
-    
-        }
-    }
+        alert(err);
+    }       
 }
 
 
@@ -120,8 +131,9 @@ function deleteProduct(i) {
     let confirmation = confirm("Are you sure you want to delete this product?");
     if (confirmation) {
         products.splice(i, 1);
-    }
+    localStorage.setItem("products", JSON.stringify(products))
     readProducts(products);
+    }
 }
 
 
@@ -129,15 +141,94 @@ function deleteProduct(i) {
 
 function updateProduct(i) {
     let product = document.querySelector(`#update-input-${i}`).value;
+    let title = document.querySelector(`#editTitle${i}`).value;
     try {
-        if (!product) throw new Error("");
+        if (!product) throw new Error("please fill in all fields  ");
         products[i] = {
-            
-        }
+            title,
+            category,
+            price,
+            img,
+        };
+        localStorage.setItem("products", JSON.stringify(products));
         readProducts(products);
     }
     catch (err) {
         alert(err);
     }
 }
+
+// ADD TO CART
+function addToCart(i) {
+    let qty = document.querySelector(`#addToCart${i}`).value;
+    let added = false;
+    cart.forEach((product) => { 
+        if(product.title == products[i].title) {
+            alert(
+                `You have succesfully added ${qty} ${products[i].title} to the cart`
+            );
+            product.qty = parseInt(product.qty) + parseInt(qty);
+            added = true;
+        }
+    });
+    if(!added) {
+        cart.push({ ...products[i], qty});
+        alert( `You have succesfully added ${qty} ${products[i].title} to the cart` );
+    }
+     localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+// UPDATE CART BADGE
+function showCartBadge() {
+  document.querySelector("#badge").innerHTML = cart ? cart.length : "";
+}
+
+// SORT BY CATEGORY
+function sortCategory() {
+  let category = document.querySelector("#sortCategory").value;
+
+  if (category == "All") {
+    return readProducts(products);
+  }
+
+  let foundProducts = products.filter((product) => {
+    return product.category == category;
+  });
+
+  readProducts(foundProducts);
+  console.log(foundProducts);
+}
+
+// SORT BY NAME
+
+function sortName() {
+  let direction = document.querySelector("#sortName").value;
+
+  let sortedProducts = products.sort((a, b) => {
+    if (a.title.toLowerCase() < b.title.toLowerCase()) {
+      return -1;
+    }
+    if (a.title.toLowerCase() > b.title.toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+  if (direction == "descending") sortedProducts.reverse();
+  console.log(sortedProducts);
+  readProducts(products);
+}
+
+// SORT BY PRICE
+
+function sortPrice() {
+  let direction = document.querySelector("#sortPrice").value;
+
+  let sortedProducts = products.sort((a, b) => a.price - b.price);
+
+  console.log(sortedProducts);
+
+  if (direction == "descending") sortedProducts.reverse();
+  readProducts(sortedProducts);
+}
+
 

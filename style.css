@@ -1,5 +1,10 @@
 #products {
-    flex-wrap;
+    flex-wrap: wrap;
+}
+
+img {
+    height: 200px;
+    object-fit: cover;
 }
 
 #products{
@@ -7,7 +12,7 @@
     subject-fit: cover;
 }
 .card {
-    width: 220px;
+    width: 280px;
     height: 400;
     margin: 10px
 }
